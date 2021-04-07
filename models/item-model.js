@@ -28,16 +28,5 @@ const itemSchema = new mongoose.Schema(
 	{ timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// Delete some info from going to clientside
-itemSchema.toJSON = function () {
-	const item = this.toObject();
-
-	delete item.createdAt;
-	delete item.updatedAt;
-	delete item.__v;
-	delete item.id;
-
-	return item;
-};
 const Item = mongoose.model('Item', itemSchema);
 module.exports = Item;
