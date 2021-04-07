@@ -3,13 +3,33 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 
+const viewRouter = require('./routes/viewRoutes');
+const apiRouter = require('./routes/apiRouter');
+
 // Start the app
 const app = express();
+
+// Pug
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, './public')));
+
+// Routes
+app.use('/api/items', apiRouter);
+
+app.use('/order-history', (req, res) => {
+	res.sendFile(path.join(__dirname, './public/history.html'));
+});
+app.use('/user-checkout', (req, res) => {
+	res.sendFile(path.join(__dirname, './public/checkout.html'));
+});
+app.use('/', (req, res) => {
+	res.sendFile(path.join(__dirname, './public/home.html'));
+});
 
 // MongoDB
 mongoose
