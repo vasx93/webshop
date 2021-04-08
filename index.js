@@ -3,7 +3,6 @@ const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 
-const viewRouter = require('./routes/viewRoutes');
 const apiRouter = require('./routes/apiRouter');
 
 // Start the app

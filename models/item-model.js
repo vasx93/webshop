@@ -17,12 +17,6 @@ const itemSchema = new mongoose.Schema(
 				return (value = Math.floor(Math.random() * 100) + 1);
 			},
 		},
-
-		inStock: {
-			type: Boolean,
-			default: true,
-		},
-
 		image: String,
 	},
 	{ timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }

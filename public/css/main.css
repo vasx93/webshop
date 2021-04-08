@@ -81,7 +81,7 @@ a {
 	align-items: center;
 }
 
-.main {
+main.main {
 	width: 100%;
 	min-height: 100vh;
 	background-color: var(--white);
@@ -91,15 +91,15 @@ a {
 	align-items: center;
 }
 .main h1 {
-	margin: 5% 0;
+	margin: 3% 0;
 }
 
 .items__container {
 	display: flex;
 	justify-content: space-evenly;
 	align-items: center;
-	flex-wrap: wrap;
 	height: 100%;
+	flex-wrap: wrap;
 	flex: 1 1 auto;
 }
 .item__card {
@@ -116,51 +116,160 @@ a {
 	align-items: center;
 	margin: 4% 0;
 }
-button {
+button.order,
+.cart__buttons button {
 	padding: 1.2rem 2rem;
 	border-radius: 5%;
 	text-transform: uppercase;
 	display: inline-block;
 	text-decoration: none;
 	position: relative;
-	-webkit-transition: all 0.4s;
-	transition: all 0.4s;
+	-webkit-transition: all 0.3s;
+	transition: all 0.3s;
 	background-color: wheat;
 
-	/*Add later when we use this for the button in form*/
+	letter-spacing: 1px;
 	border: none;
 	cursor: pointer;
+	outline: none;
 }
 
-/* error  */
-.error {
-	position: absolute;
-	top: 35%;
-	left: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
-	max-width: 80rem;
-	text-align: center;
+button.order:hover,
+.cart__buttons button:hover {
+	transform: scale(1.15);
 }
-.error__title {
-	display: -webkit-box;
-	display: -ms-flexbox;
+
+button.order:focus,
+button.order:active,
+.cart__buttons button:hover,
+.cart__buttons button:active {
+	background-color: rgb(245, 238, 225);
+	border: none;
+	outline: none;
+}
+button > i {
+	pointer-events: none;
+}
+
+/*** CHECKOUT ****  */
+.checkout__wrapper {
 	display: flex;
-	-webkit-box-align: center;
-	-ms-flex-align: center;
+	justify-content: space-between;
 	align-items: center;
-	-webkit-box-pack: center;
-	-ms-flex-pack: center;
+	width: 100%;
+	height: 100vh;
+	padding: 1% 3%;
+	margin-top: 3%;
+}
+
+.user__info {
+	width: 100%;
+	height: 100%;
+}
+.user__info__details {
+	display: flex;
+	flex-direction: column;
 	justify-content: center;
-	margin-bottom: 1rem;
+	align-items: center;
+	width: 100%;
 }
-.error__emoji {
-	font-size: 3.75rem;
-	margin-left: 1rem;
+.user__info__details h3 {
+	margin-bottom: 3%;
+	width: 100%;
+	text-align: left;
 }
-.error__msg {
-	font-size: 2.5rem;
-	font-weight: 700;
-	max-width: 50rem;
-	margin: 0 auto;
+.user__info__details .info {
+	margin: 3% auto;
+	width: 100%;
+}
+.user__info__details input {
+	width: 80%;
+	height: 2.5rem;
+	outline: none;
+}
+.user__info__details label {
+	display: block;
+	margin-bottom: 1%;
+}
+
+.checkout {
+	width: 100%;
+	height: 100%;
+}
+.checkout__inner {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.checkout__card {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 1% 3%;
+	margin: 3% auto;
+}
+
+.cart__item,
+.cart__qty,
+.cart__subtotal {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+.cart__item p,
+.cart__qty p,
+.cart__subtotal p {
+	font-size: 1.2rem;
+}
+.cart__qty .qty {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.total {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	height: 10vh;
+}
+.cart__total {
+	background-color: rgb(199, 199, 199);
+	height: 100%;
+	flex: 1 1 20%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.cart__total h4 {
+	letter-spacing: 1px;
+	color: var(--dark);
+}
+.cart__buttons {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: rgb(199, 199, 199);
+	flex: 1 1 auto;
+}
+
+.cart__buy a,
+.cart__update a {
+	display: inline-block;
+	/* height: 2rem;
+	width: 7rem; */
+	color: var(--dark);
+	letter-spacing: 1px;
+	font-weight: bold;
+	text-align: center;
 }

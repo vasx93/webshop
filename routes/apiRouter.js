@@ -6,8 +6,8 @@ router.get('/', async (req, res) => {
 	try {
 		const items = await Item.find();
 
-		if (!items) {
-			return res.status(404).send({ message: 'Something went wrong' });
+		if (!items || items.length === 0) {
+			return res.status(400).send({ message: 'Something went wrong' });
 		}
 
 		res.status(200).json({ results: items.length, items });
