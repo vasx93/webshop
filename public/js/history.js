@@ -1,13 +1,11 @@
 import { ORDER_HISTORY } from './orderHistory';
 import { CART_UPDATE } from './cart';
-//TODO sort each cart shop list into one object
 
 export function renderHistory() {
 	CART_UPDATE.updateCounter();
 	ORDER_HISTORY.init();
 
 	const data = ORDER_HISTORY.contents;
-	console.log(data);
 
 	if (data && data.length > 0) {
 		// Create inner parent element
@@ -16,15 +14,13 @@ export function renderHistory() {
 		historyInner.classList.add('history__inner');
 		historyContainer.append(historyInner);
 
-		// Each order object
+		// Each item order
 		data.forEach(orderArr => {
 			const order = document.createElement('div');
 			order.classList.add('history__order');
 
 			orderArr[0].forEach(item => {
-				console.log(item);
-
-				//Make div for each item bought in 1 order
+				//Make div for each item bought in one order
 				const innerOrderItem = document.createElement('div');
 				innerOrderItem.classList.add('history__order__item');
 				innerOrderItem.innerHTML = HISTORY_DISPLAY.renderOrder(item);

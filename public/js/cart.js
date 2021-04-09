@@ -64,6 +64,7 @@ export const CART = {
 
 	total() {
 		this.init();
+
 		const total = this.contents.reduce((acc, next) => {
 			return acc + next.price * next.qty;
 		}, 0);

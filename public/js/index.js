@@ -5,8 +5,6 @@ import { renderHistory } from './history';
 import { CART, CART_UPDATE } from './cart';
 import { ORDER_HISTORY } from './orderHistory';
 
-//TODO set up a counter
-
 //* HOME PAGE
 if (document.querySelector('.items__container')) {
 	renderHomePage();
@@ -82,7 +80,6 @@ if (document.querySelector('.checkout')) {
 				// Push cart items into localStorage history
 				const total = CART.total();
 				const orderArr = [[...CART.contents], total];
-				console.log(orderArr);
 
 				ORDER_HISTORY.contents.push(orderArr);
 				ORDER_HISTORY.syncHistory();
@@ -91,17 +88,16 @@ if (document.querySelector('.checkout')) {
 				CART.empty();
 				CART_UPDATE.updateCounter();
 
-				document.body.querySelector('#buy').textContent = 'Processing..';
 				//Complete order
+				document.body.querySelector('#buy').textContent = 'Processing..';
+
 				window.setTimeout(() => {
 					alert('Order completed');
 					location.assign('/order-history');
-				}, 1500);
+				}, 1200);
 			} else if (CART.contents.length == 0) {
-				window.setTimeout(() => {
-					alert('Your cart is empty');
-					location.assign('/');
-				}, 350);
+				alert('Your cart is empty');
+				location.assign('/');
 			} else {
 				alert('Please fill out shipping information');
 			}

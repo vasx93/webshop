@@ -8,10 +8,6 @@ const apiRouter = require('./routes/apiRouter');
 // Start the app
 const app = express();
 
-// Pug
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
-
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
