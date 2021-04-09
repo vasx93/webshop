@@ -6,6 +6,7 @@ export const products = [];
 export async function renderHomePage() {
 	try {
 		CART_UPDATE.updateCounter();
+
 		const res = await axios({
 			method: 'GET',
 			url: '/api/items',
@@ -28,7 +29,6 @@ export async function renderHomePage() {
 	}
 }
 
-// Redner each item card
 function renderData(data) {
 	return `
     	<div class="item__img">

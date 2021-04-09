@@ -68,23 +68,43 @@ if (document.querySelector('.checkout')) {
 	// Checkout btn
 	if (document.body.querySelector('#buy')) {
 		document.body.querySelector('#buy').addEventListener('click', ev => {
-			// Init history in localStorage
-			ORDER_HISTORY.init();
-			CART.init();
+			// Check for inputs
+			const inputs = Array.from(
+				document.body.querySelectorAll('input[type="text"]')
+			);
 
-			// Push cart items into localStorage history
-			CART.contents.forEach(el => ORDER_HISTORY.contents.push(el));
-			ORDER_HISTORY.syncHistory();
+			const valid = inputs.every(el => el.value !== '');
 
-			// Delete cart
-			CART.empty();
-			CART_UPDATE.updateCounter();
+			if (valid && CART.contents.length > 0) {
+				// Init history in localStorage
+				ORDER_HISTORY.init();
 
-			// Complete order
-			window.setTimeout(() => {
-				alert('Order completed');
-				location.assign('/order-history');
-			}, 500);
+				// Push cart items into localStorage history
+				const total = CART.total();
+				const orderArr = [[...CART.contents], total];
+				console.log(orderArr);
+
+				ORDER_HISTORY.contents.push(orderArr);
+				ORDER_HISTORY.syncHistory();
+
+				// Delete cart
+				CART.empty();
+				CART_UPDATE.updateCounter();
+
+				document.body.querySelector('#buy').textContent = 'Processing..';
+				//Complete order
+				window.setTimeout(() => {
+					alert('Order completed');
+					location.assign('/order-history');
+				}, 1500);
+			} else if (CART.contents.length == 0) {
+				window.setTimeout(() => {
+					alert('Your cart is empty');
+					location.assign('/');
+				}, 350);
+			} else {
+				alert('Please fill out shipping information');
+			}
 		});
 	}
 }

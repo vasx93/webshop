@@ -62,6 +62,16 @@ export const CART = {
 		this.syncCart();
 	},
 
+	total() {
+		this.init();
+		const total = this.contents.reduce((acc, next) => {
+			return acc + next.price * next.qty;
+		}, 0);
+
+		this.syncCart();
+		return total;
+	},
+
 	empty() {
 		this.contents = [];
 		this.syncCart();
@@ -86,7 +96,7 @@ export const CART_UPDATE = {
 
 			parent.removeChild(card);
 			this.updateTotal();
-			CART_UPDATE.updateCounter();
+			this.updateCounter();
 		}
 	},
 
@@ -98,14 +108,9 @@ export const CART_UPDATE = {
 		this.updateTotal();
 	},
 	updateTotal() {
-		const subs = Array.from(document.body.querySelectorAll('.subtotal'));
-
-		let total = 0;
-
-		subs.forEach(el => {
-			total += el.textContent.split('$')[1] * 1;
-		});
-		document.body.querySelector('#saldo').textContent = `TOTAL $${total}`;
+		document.body.querySelector(
+			'#saldo'
+		).textContent = `TOTAL $${CART.total()}`;
 	},
 
 	updateCounter() {

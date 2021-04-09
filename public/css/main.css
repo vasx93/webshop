@@ -186,16 +186,24 @@ button > i {
 .history__order {
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	flex-direction: column;
+	justify-content: center;
 	align-items: center;
 	padding: 1% 3%;
-	margin: 3% auto;
+	margin: 0.5% auto;
 }
-.history__order p {
+.history__order__item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: 2% 0;
+}
+.history__order__item p {
 	margin-top: 10%;
 	text-align: center;
 }
-.history__total__saldo h4 {
+.history__order__total h4 {
 	letter-spacing: 1px;
 	color: var(--dark);
 	text-align: right;
