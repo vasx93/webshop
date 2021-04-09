@@ -1,31 +1,31 @@
-import { products } from './loadPage';
+import { products } from './homepage';
 
 export const CART = {
 	key: 'mycart',
 	contents: [],
 
 	init() {
-		let _contents = localStorage.getItem(CART.key);
+		let _contents = localStorage.getItem(this.key);
 		if (_contents) {
-			CART.contents = JSON.parse(_contents);
+			this.contents = JSON.parse(_contents);
 		} else {
-			CART.contents = [];
-			CART.syncCart();
+			this.contents = [];
+			this.syncCart();
 		}
 	},
 
 	async syncCart() {
-		let cart = JSON.stringify(CART.contents);
-		await localStorage.setItem(CART.key, cart);
+		let cart = JSON.stringify(this.contents);
+		await localStorage.setItem(this.key, cart);
 	},
 
 	find(id) {
-		return CART.contents.find(item => item._id == id);
+		return this.contents.find(item => item._id == id);
 	},
 
 	add(id) {
-		if (CART.find(id)) {
-			CART.increase(id, 1);
+		if (this.find(id)) {
+			this.increase(id, 1);
 		} else {
 			//If item isnt in cart > add one
 			let item = products.find(item => item._id == id);
@@ -34,43 +34,86 @@ export const CART = {
 					...item,
 					qty: 1,
 				};
-				CART.contents.push(obj);
-				CART.syncCart();
+				this.contents.push(obj);
+				this.syncCart();
 			}
 		}
 	},
 
 	increase(id, qty = 1) {
-		let item = CART.contents.find(item => item._id == id);
+		let item = this.contents.find(item => item._id == id);
 		if (item) {
 			item.qty = item.qty + qty;
 		}
-		CART.syncCart();
+		this.syncCart();
 	},
+
 	reduce(id, qty = 1) {
-		let match = CART.contents.find(item => item._id == id);
+		let match = this.contents.find(item => item._id == id);
 
 		if (match && match.qty == 0) {
-			CART.remove(match._id);
+			this.remove(match._id);
 		}
 		match.qty -= qty;
-		CART.sync();
+		this.syncCart();
 	},
 	remove(id) {
-		CART.contents = CART.contents.filter(item => item._id != id);
-		CART.sync();
+		this.contents = this.contents.filter(item => item._id != id);
+		this.syncCart();
 	},
 
 	empty() {
-		CART.contents = [];
-		CART.syncCart();
-	},
-
-	logContents() {
-		console.log(CART.contents);
+		this.contents = [];
+		this.syncCart();
 	},
 
 	clear() {
-		localStorage.clear();
+		localStorage.removeItem(this.key);
+	},
+};
+
+export const CART_UPDATE = {
+	updateQty(id) {
+		const itemQty = document.body.querySelector(`[data-p="${id}"]`);
+		const item = CART.find(id);
+
+		if (item.qty >= 1) {
+			itemQty.textContent = item.qty;
+		} else {
+			CART.remove(id);
+			const parent = document.body.querySelector('.checkout__inner');
+			const card = document.body.querySelector(`[data-id="${id}"]`);
+
+			parent.removeChild(card);
+			this.updateTotal();
+			CART_UPDATE.updateCounter();
+		}
+	},
+
+	updateSubtotal(id) {
+		const sub = document.body.querySelector(`[data-sub="${id}"]`);
+		const item = CART.find(id);
+
+		sub.textContent = `$${item.price * item.qty}`;
+		this.updateTotal();
+	},
+	updateTotal() {
+		const subs = Array.from(document.body.querySelectorAll('.subtotal'));
+
+		let total = 0;
+
+		subs.forEach(el => {
+			total += el.textContent.split('$')[1] * 1;
+		});
+		document.body.querySelector('#saldo').textContent = `TOTAL $${total}`;
+	},
+
+	updateCounter() {
+		CART.init();
+		let counter = document.body.querySelector('.counter');
+		const value = CART.contents.reduce((acc, next) => {
+			return acc + next.qty;
+		}, 0);
+		counter.textContent = value;
 	},
 };

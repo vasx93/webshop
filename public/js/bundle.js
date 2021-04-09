@@ -8451,90 +8451,15 @@ module.exports.default = axios;
 
 },{"./utils":"../../node_modules/axios/lib/utils.js","./helpers/bind":"../../node_modules/axios/lib/helpers/bind.js","./core/Axios":"../../node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"../../node_modules/axios/lib/core/mergeConfig.js","./defaults":"../../node_modules/axios/lib/defaults.js","./cancel/Cancel":"../../node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"../../node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"../../node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"../../node_modules/axios/lib/helpers/spread.js","./helpers/isAxiosError":"../../node_modules/axios/lib/helpers/isAxiosError.js"}],"../../node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"../../node_modules/axios/lib/axios.js"}],"loadPage.js":[function(require,module,exports) {
+},{"./lib/axios":"../../node_modules/axios/lib/axios.js"}],"cart.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loadPage = loadPage;
-exports.products = void 0;
+exports.CART_UPDATE = exports.CART = void 0;
 
-var _axios = _interopRequireDefault(require("axios"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-var products = [];
-exports.products = products;
-
-function loadPage() {
-  return _loadPage.apply(this, arguments);
-} // Redner each item card
-
-
-function _loadPage() {
-  _loadPage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-    var res, container;
-    return regeneratorRuntime.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _context.next = 3;
-            return (0, _axios.default)({
-              method: 'GET',
-              url: '/api/items'
-            });
-
-          case 3:
-            res = _context.sent;
-
-            if (res.status === 200) {
-              // Render page
-              container = document.querySelector('.items__container');
-              res.data.items.forEach(function (el) {
-                products.push(el);
-                var div = document.createElement('div');
-                div.classList.add('item__card');
-                div.innerHTML = renderData(el);
-                container.append(div);
-              });
-            }
-
-            _context.next = 10;
-            break;
-
-          case 7:
-            _context.prev = 7;
-            _context.t0 = _context["catch"](0);
-            console.log(_context.t0.message);
-
-          case 10:
-          case "end":
-            return _context.stop();
-        }
-      }
-    }, _callee, null, [[0, 7]]);
-  }));
-  return _loadPage.apply(this, arguments);
-}
-
-function renderData(data) {
-  return "\n    \t<div class=\"item__img\">\n\t\t\t\t<img class=\"img\" src=\"/img/default.jpeg\">\n\t\t\t</div>\n\n    \t<div class=\"item__info\">\n\t\t\t\t<h4>".concat(data.name, "</h4>\n        <p class=\"price\">$").concat(data.price, "</p>\n    \t</div>\n\n    \t<div class=\"item__order\">\n\t\t\t\t<button class=\"order\" data-id=\"").concat(data._id, "\">Add to cart</button>\n\t\t\t</div>\n\t\t");
-}
-},{"axios":"../../node_modules/axios/index.js"}],"cart.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CART = void 0;
-
-var _loadPage = require("./loadPage");
+var _homepage = require("./homepage");
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
@@ -8550,25 +8475,27 @@ var CART = {
   key: 'mycart',
   contents: [],
   init: function init() {
-    var _contents = localStorage.getItem(CART.key);
+    var _contents = localStorage.getItem(this.key);
 
     if (_contents) {
-      CART.contents = JSON.parse(_contents);
+      this.contents = JSON.parse(_contents);
     } else {
-      CART.contents = [];
-      CART.syncCart();
+      this.contents = [];
+      this.syncCart();
     }
   },
   syncCart: function syncCart() {
+    var _this = this;
+
     return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       var cart;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              cart = JSON.stringify(CART.contents);
+              cart = JSON.stringify(_this.contents);
               _context.next = 3;
-              return localStorage.setItem(CART.key, cart);
+              return localStorage.setItem(_this.key, cart);
 
             case 3:
             case "end":
@@ -8579,16 +8506,16 @@ var CART = {
     }))();
   },
   find: function find(id) {
-    return CART.contents.find(function (item) {
+    return this.contents.find(function (item) {
       return item._id == id;
     });
   },
   add: function add(id) {
-    if (CART.find(id)) {
-      CART.increase(id, 1);
+    if (this.find(id)) {
+      this.increase(id, 1);
     } else {
       //If item isnt in cart > add one
-      var item = _loadPage.products.find(function (item) {
+      var item = _homepage.products.find(function (item) {
         return item._id == id;
       });
 
@@ -8597,14 +8524,14 @@ var CART = {
           qty: 1
         });
 
-        CART.contents.push(obj);
-        CART.syncCart();
+        this.contents.push(obj);
+        this.syncCart();
       }
     }
   },
   increase: function increase(id) {
     var qty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    var item = CART.contents.find(function (item) {
+    var item = this.contents.find(function (item) {
       return item._id == id;
     });
 
@@ -8612,40 +8539,156 @@ var CART = {
       item.qty = item.qty + qty;
     }
 
-    CART.syncCart();
+    this.syncCart();
   },
   reduce: function reduce(id) {
     var qty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-    var match = CART.contents.find(function (item) {
+    var match = this.contents.find(function (item) {
       return item._id == id;
     });
 
     if (match && match.qty == 0) {
-      CART.remove(match._id);
+      this.remove(match._id);
     }
 
     match.qty -= qty;
-    CART.sync();
+    this.syncCart();
   },
   remove: function remove(id) {
-    CART.contents = CART.contents.filter(function (item) {
+    this.contents = this.contents.filter(function (item) {
       return item._id != id;
     });
-    CART.sync();
+    this.syncCart();
   },
   empty: function empty() {
-    CART.contents = [];
-    CART.syncCart();
-  },
-  logContents: function logContents() {
-    console.log(CART.contents);
+    this.contents = [];
+    this.syncCart();
   },
   clear: function clear() {
-    localStorage.clear();
+    localStorage.removeItem(this.key);
   }
 };
 exports.CART = CART;
-},{"./loadPage":"loadPage.js"}],"checkout.js":[function(require,module,exports) {
+var CART_UPDATE = {
+  updateQty: function updateQty(id) {
+    var itemQty = document.body.querySelector("[data-p=\"".concat(id, "\"]"));
+    var item = CART.find(id);
+
+    if (item.qty >= 1) {
+      itemQty.textContent = item.qty;
+    } else {
+      CART.remove(id);
+      var parent = document.body.querySelector('.checkout__inner');
+      var card = document.body.querySelector("[data-id=\"".concat(id, "\"]"));
+      parent.removeChild(card);
+      this.updateTotal();
+      CART_UPDATE.updateCounter();
+    }
+  },
+  updateSubtotal: function updateSubtotal(id) {
+    var sub = document.body.querySelector("[data-sub=\"".concat(id, "\"]"));
+    var item = CART.find(id);
+    sub.textContent = "$".concat(item.price * item.qty);
+    this.updateTotal();
+  },
+  updateTotal: function updateTotal() {
+    var subs = Array.from(document.body.querySelectorAll('.subtotal'));
+    var total = 0;
+    subs.forEach(function (el) {
+      total += el.textContent.split('$')[1] * 1;
+    });
+    document.body.querySelector('#saldo').textContent = "TOTAL $".concat(total);
+  },
+  updateCounter: function updateCounter() {
+    CART.init();
+    var counter = document.body.querySelector('.counter');
+    var value = CART.contents.reduce(function (acc, next) {
+      return acc + next.qty;
+    }, 0);
+    counter.textContent = value;
+  }
+};
+exports.CART_UPDATE = CART_UPDATE;
+},{"./homepage":"homepage.js"}],"homepage.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.renderHomePage = renderHomePage;
+exports.products = void 0;
+
+var _axios = _interopRequireDefault(require("axios"));
+
+var _cart = require("./cart");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var products = [];
+exports.products = products;
+
+function renderHomePage() {
+  return _renderHomePage.apply(this, arguments);
+} // Redner each item card
+
+
+function _renderHomePage() {
+  _renderHomePage = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var res, container;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+
+            _cart.CART_UPDATE.updateCounter();
+
+            _context.next = 4;
+            return (0, _axios.default)({
+              method: 'GET',
+              url: '/api/items'
+            });
+
+          case 4:
+            res = _context.sent;
+
+            if (res.status === 200) {
+              container = document.querySelector('.items__container');
+              res.data.items.forEach(function (el) {
+                products.push(el);
+                var div = document.createElement('div');
+                div.classList.add('item__card');
+                div.innerHTML = renderData(el);
+                container.append(div);
+              });
+            }
+
+            _context.next = 11;
+            break;
+
+          case 8:
+            _context.prev = 8;
+            _context.t0 = _context["catch"](0);
+            console.log(_context.t0.message);
+
+          case 11:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 8]]);
+  }));
+  return _renderHomePage.apply(this, arguments);
+}
+
+function renderData(data) {
+  return "\n    \t<div class=\"item__img\">\n\t\t\t\t<img class=\"img\" src=\"/img/default.jpeg\">\n\t\t\t</div>\n\n    \t<div class=\"item__info\">\n\t\t\t\t<h4>".concat(data.name, "</h4>\n        <p class=\"price\">$").concat(data.price, "</p>\n    \t</div>\n\n    \t<div class=\"item__order\">\n\t\t\t\t<button class=\"order\" data-id=\"").concat(data._id, "\">Add to cart</button>\n\t\t\t</div>\n\t\t");
+}
+},{"axios":"../../node_modules/axios/index.js","./cart":"cart.js"}],"checkout.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8659,48 +8702,160 @@ function renderCheckoutPage() {
   _cart.CART.init();
 
   var data = _cart.CART.contents;
+
+  _cart.CART_UPDATE.updateCounter();
+
   var checkout = document.querySelector('.checkout');
   var userInfo = document.querySelector('.user__info');
 
   if (data && data.length > 0) {
-    // Create each item card -- checkout
-    var d = document.createElement('div');
-    d.classList.add('checkout__inner');
-    checkout.append(d);
-    data.forEach(function (item) {
-      var div = document.createElement('div');
-      div.classList.add('checkout__card');
-      div.innerHTML = renderCheckoutCard(item);
-      d.append(div);
-    }); // TOTAL
+    // Create wrapper for item cards
+    var checkoutInner = document.createElement('div');
+    checkoutInner.classList.add('checkout__inner');
+    checkout.append(checkoutInner); // Render cards for cart items
 
+    data.forEach(function (item) {
+      var card = document.createElement('div');
+      card.classList.add('checkout__card');
+      card.dataset.id = item._id;
+      card.innerHTML = PAGE_DISPLAY.renderCheckoutCard(item);
+      checkoutInner.append(card);
+    }); // Render TOTAL
+
+    var total = document.createElement('div');
+    total.classList.add('total');
+    total.innerHTML = PAGE_DISPLAY.renderTotal(data);
+    checkoutInner.append(total); // User information
+
+    var userInputs = document.createElement('div');
+    userInputs.classList.add('user__info__details');
+    userInputs.innerHTML = PAGE_DISPLAY.renderUserInfo();
+    userInfo.append(userInputs);
+  }
+}
+
+var PAGE_DISPLAY = {
+  renderCheckoutCard: function renderCheckoutCard(item) {
+    var subtotal = item.price * item.qty;
+    return "\n    <div class=\"cart__item\">\n      <h4>Item</h4>\n      <p>".concat(item.name, "</p>\n    </div>\n\n    <div class=\"cart__price\">\n      <h4>Price</h4>\n      <p>$").concat(item.price, "</p>\n    </div>\n    \n    <div class=\"cart__qty\">\n      <h4>Quantity</h4>\n      <div class=\"qty\">\n        <button class=\"minus\" data-id=\"").concat(item._id, "\">\n          <i class=\"fas fa-chevron-left\"></i>\n        </button>\n        <p class=\"item__p\" data-p=\"").concat(item._id, "\">").concat(item.qty, "</p>\n        <button class=\"plus\" data-id=\"").concat(item._id, "\">\n          <i class=\"fas fa-chevron-right\"></i>\n        </button>\n      </div>\n    </div>\n  \n    <div class=\"cart__subtotal\">\n      <h4>Subtotal</h4>\n      <p class=\"subtotal\" data-sub=\"").concat(item._id, "\">$").concat(subtotal, "</p>\n    </div>\n    ");
+  },
+  renderUserInfo: function renderUserInfo() {
+    return "\n      \n        <h3> Please fill out the shipping details</h3>\n        <div class=\"info\">\n          <label for=\"name\">Name</label>\n          <input type=\"text\" id=\"name\" placeholder=\"Your name..\" required>\n        </div>\n  \n        <div class=\"info\">\n          <label for=\"phone\">Phone number</label>\n          <input type=\"text\" id=\"phone\" placeholder=\"+3816444444...\" required>\n        </div>\n  \n        <div class=\"info\">\n          <label for=\"address\">Address</label>\n          <input type=\"text\" id=\"address\" placeholder=\"Address...\" required>\n        </div>\n  \n        <div class=\"info\">\n          <label for=\"country\">Country</label>\n          <input type=\"text\" id=\"country\" placeholder=\"Country...\" required>\n        </div>\n        <div class=\"info\">\n          <label for=\"city\">City</label>\n          <input type=\"text\" id=\"city\" placeholder=\"City...\"required >\n        </div>";
+  },
+  renderTotal: function renderTotal(data) {
     var saldo = data.reduce(function (start, item) {
       return start + item.qty * item.price;
     }, 0);
-    var total = document.createElement('div');
-    total.classList.add('total');
-    total.innerHTML = "\n  <div class=\"cart__buttons\">\n    <div class=\"cart__update\">\n      <a id=\"update\" href=\"/\"><button>Update Cart</button></a>\n    </div>\n    <div class=\"cart__buy\">\n      <a id=\"buy\" href=\"/\"><button>Checkout</button></a>\n    </div>\n  </div>\n  <div class=\"cart__total\">\n    <h4>TOTAL $".concat(saldo, "</h4>\n  </div>\n\n  ");
-    d.append(total); // User information
-
-    var i = document.createElement('div');
-    i.classList.add('user__info__details');
-    i.innerHTML = renderUserInfo();
-    userInfo.append(i);
+    return "\n    <div class=\"cart__buttons\">\n      <div class=\"cart__update\">\n        <a href=\"/\"><button id=\"update\">Update Cart</button></a>\n      </div>\n      <div class=\"cart__buy\">\n        <button id=\"buy\">Checkout</button>\n      </div>\n    </div>\n    <div class=\"cart__total\">\n      <h4 id=\"saldo\">TOTAL $".concat(saldo, "</h4>\n    </div>");
   }
-} // 	/* <div class="cart__img">
-//     <img src="/img/default.jpeg" alt="SneakerZ">
-//   </div> */
+};
+},{"./cart":"cart.js"}],"orderHistory.js":[function(require,module,exports) {
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ORDER_HISTORY = void 0;
 
-function renderCheckoutCard(item) {
-  var subtotal = item.price * item.qty;
-  return "\n  <div class=\"cart__item\">\n    <h4>Item</h4>\n    <p>".concat(item.name, "</p>\n  </div>\n  \n  <div class=\"cart__qty\">\n    <h4>Quantity</h4>\n    <div class=\"qty\">\n      <button class=\"minus\" data-id=\"").concat(item._id, "\">\n        <i class=\"fas fa-chevron-left\"></i>\n      </button>\n      <p>").concat(item.qty, "</p>\n      <button class=\"plus\" data-id=\"").concat(item._id, "\">\n        <i class=\"fas fa-chevron-right\"></i>\n      </button>\n    </div>\n  </div>\n\n  <div class=\"cart__subtotal\">\n    <h4>Subtotal</h4>\n    <p>$").concat(subtotal, "</p>\n  </div>\n  ");
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var ORDER_HISTORY = {
+  key: 'orderHistory',
+  contents: [],
+  init: function init() {
+    var _contents = localStorage.getItem(this.key);
+
+    if (_contents) {
+      this.contents = JSON.parse(_contents);
+    } else {
+      this.contents = [];
+      this.syncHistory();
+    }
+  },
+  syncHistory: function syncHistory() {
+    var _this = this;
+
+    return _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+      var cart;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              cart = JSON.stringify(_this.contents);
+              _context.next = 3;
+              return localStorage.setItem(_this.key, cart);
+
+            case 3:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  empty: function empty() {
+    this.contents = [];
+    this.syncHistory();
+  },
+  clear: function clear() {
+    localStorage.removeItem(this.key);
+  }
+};
+exports.ORDER_HISTORY = ORDER_HISTORY;
+},{}],"history.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.renderHistory = renderHistory;
+
+var _orderHistory = require("./orderHistory");
+
+var _cart = require("./cart");
+
+//TODO sort each cart shop list into one object
+function renderHistory() {
+  _orderHistory.ORDER_HISTORY.init();
+
+  var data = _orderHistory.ORDER_HISTORY.contents;
+
+  _cart.CART_UPDATE.updateCounter();
+
+  if (data && data.length > 0) {
+    // Create inner parent element
+    var historyContainer = document.body.querySelector('.history__container');
+    var historyInner = document.createElement('div');
+    historyInner.classList.add('history__inner');
+    historyContainer.append(historyInner);
+    data.forEach(function (el) {
+      var order = document.createElement('div');
+      order.classList.add('history__order');
+      order.innerHTML = HISTORY_DISPLAY.renderOrder(el);
+      historyInner.append(order);
+    }); // Display total
+
+    var total = document.createElement('div');
+    total.classList.add('history__total');
+    total.innerHTML = HISTORY_DISPLAY.renderTotal(data);
+    historyInner.append(total);
+  }
 }
 
-function renderUserInfo() {
-  return "\n    \n      <h3> Please fill out the shipping details</h3>\n      <div class=\"info\">\n        <label for=\"name\">Name</label>\n        <input type=\"text\" id=\"name\" placeholder=\"Your name..\">\n      </div>\n\n      <div class=\"info\">\n        <label for=\"phone\">Phone number</label>\n        <input type=\"text\" id=\"phone\" placeholder=\"+3816444444...\">\n      </div>\n\n      <div class=\"info\">\n        <label for=\"address\">Address</label>\n        <input type=\"text\" id=\"address\" placeholder=\"Address...\">\n      </div>\n\n      <div class=\"info\">\n        <label for=\"country\">Country</label>\n        <input type=\"text\" id=\"country\" placeholder=\"Country...\">\n      </div>\n      <div class=\"info\">\n        <label for=\"city\">City</label>\n        <input type=\"text\" id=\"city\" placeholder=\"City...\">\n      </div>\n  \n  ";
-}
-},{"./cart":"cart.js"}],"index.js":[function(require,module,exports) {
+var HISTORY_DISPLAY = {
+  renderOrder: function renderOrder(data) {
+    return "\n            <div class=\"history__item\">\n                <h4>Item</h4>\n                <p>".concat(data.name, "</p>\n            </div>\n    \n            <div class=\"history__qty\">\n                <h4>Quantity</h4>\n                <p>").concat(data.qty, "</p>\n            </div>\n    \n            <div class=\"history_price\">\n                <h4>Price</h4>\n                <p>$").concat(data.price, "</p>\n            </div>");
+  },
+  renderTotal: function renderTotal(data) {
+    var saldo = data.reduce(function (start, item) {
+      return start + item.qty * item.price;
+    }, 0);
+    return "\n            <div class=\"history__total__saldo\">\n                <h4 id=\"history__total__saldo\">TOTAL $".concat(saldo, "</h4>\n            </div>");
+  }
+};
+},{"./orderHistory":"orderHistory.js","./cart":"cart.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es6.array.copy-within.js");
@@ -8965,51 +9120,110 @@ require("core-js/modules/web.dom.iterable.js");
 
 require("regenerator-runtime/runtime.js");
 
-var _loadPage = require("./loadPage");
+var _homepage = require("./homepage");
+
+var _checkout = require("./checkout");
+
+var _history = require("./history");
 
 var _cart = require("./cart");
 
-var _checkout = require("./checkout");
+var _orderHistory = require("./orderHistory");
 
 //TODO set up a counter
 //* HOME PAGE
 if (document.querySelector('.items__container')) {
-  window.onload = (0, _loadPage.loadPage)();
-
-  _cart.CART.init();
-
+  (0, _homepage.renderHomePage)();
   document.body.addEventListener('click', function (ev) {
     if (ev.target.classList.contains('order')) {
+      _cart.CART.init();
+
       var id = ev.target.dataset.id;
 
       _cart.CART.add(id);
+
+      _cart.CART_UPDATE.updateCounter();
     }
   });
+} //* ORDER HISTORY PAGE
+
+
+if (document.body.querySelector('.history__container')) {
+  (0, _history.renderHistory)();
 } //* CHECKOUT PAGE
 
 
 if (document.querySelector('.checkout')) {
-  (0, _checkout.renderCheckoutPage)(); // Buttons
+  (0, _checkout.renderCheckoutPage)(); // Increment cart item
 
-  var plus = document.body.querySelector('.plus');
-  var minus = document.body.querySelector('.minus');
-  plus.addEventListener('click', function (ev) {
-    var id = ev.target.dataset.id;
+  if (document.body.querySelectorAll('.plus')) {
+    var plusBtns = Array.from(document.body.querySelectorAll('.plus'));
+    plusBtns.forEach(function (el) {
+      el.addEventListener('click', function (ev) {
+        var id = ev.target.dataset.id;
 
-    _cart.CART.increase(id, 1); // const parent = ev.target.parentElement;
-    // let qty = parent.getElementsByTagName('p');
-    // let item = CART.find(id);
-    // if (item) {
-    // 	qty.textContent = item.qty;
-    // } else {
-    // }
+        _cart.CART.increase(id, 1);
 
-  });
-  minus.addEventListener('click', function (ev) {
-    var id = ev.target.dataset.id;
-  });
+        _cart.CART_UPDATE.updateQty(id);
+
+        _cart.CART_UPDATE.updateSubtotal(id);
+
+        _cart.CART_UPDATE.updateTotal();
+
+        _cart.CART_UPDATE.updateCounter();
+      });
+    });
+  } // Decrement cart item
+
+
+  if (document.body.querySelectorAll('.minus')) {
+    var minusBtns = Array.from(document.body.querySelectorAll('.minus'));
+    minusBtns.forEach(function (el) {
+      el.addEventListener('click', function (ev) {
+        var id = ev.target.dataset.id;
+
+        _cart.CART.reduce(id, 1);
+
+        _cart.CART_UPDATE.updateQty(id);
+
+        _cart.CART_UPDATE.updateSubtotal(id);
+
+        _cart.CART_UPDATE.updateTotal();
+
+        _cart.CART_UPDATE.updateCounter();
+      });
+    });
+  } // Checkout btn
+
+
+  if (document.body.querySelector('#buy')) {
+    document.body.querySelector('#buy').addEventListener('click', function (ev) {
+      // Init history in localStorage
+      _orderHistory.ORDER_HISTORY.init();
+
+      _cart.CART.init(); // Push cart items into localStorage history
+
+
+      _cart.CART.contents.forEach(function (el) {
+        return _orderHistory.ORDER_HISTORY.contents.push(el);
+      });
+
+      _orderHistory.ORDER_HISTORY.syncHistory(); // Delete cart
+
+
+      _cart.CART.empty();
+
+      _cart.CART_UPDATE.updateCounter(); // Complete order
+
+
+      window.setTimeout(function () {
+        alert('Order completed');
+        location.assign('/order-history');
+      }, 500);
+    });
+  }
 }
-},{"core-js/modules/es6.array.copy-within.js":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill.js":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.filter.js":"../../node_modules/core-js/modules/es6.array.filter.js","core-js/modules/es6.array.find.js":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index.js":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.from.js":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes.js":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator.js":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.map.js":"../../node_modules/core-js/modules/es6.array.map.js","core-js/modules/es6.array.of.js":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.slice.js":"../../node_modules/core-js/modules/es6.array.slice.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es6.array.species.js":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive.js":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance.js":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name.js":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map.js":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh.js":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh.js":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh.js":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt.js":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32.js":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh.js":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1.js":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround.js":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot.js":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul.js":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p.js":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10.js":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2.js":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign.js":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh.js":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh.js":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc.js":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor.js":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon.js":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite.js":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer.js":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan.js":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer.js":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer.js":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer.js":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float.js":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int.js":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign.js":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter.js":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter.js":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries.js":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze.js":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors.js":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names.js":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of.js":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter.js":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter.js":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions.js":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.to-string.js":"../../node_modules/core-js/modules/es6.object.to-string.js","core-js/modules/es6.object.is.js":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen.js":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed.js":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible.js":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys.js":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal.js":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es7.object.values.js":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise.js":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply.js":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct.js":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property.js":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property.js":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get.js":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has.js":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible.js":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys.js":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions.js":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set.js":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor.js":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags.js":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match.js":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace.js":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split.js":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search.js":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string.js":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set.js":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol.js":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor.js":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big.js":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink.js":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold.js":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at.js":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with.js":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed.js":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor.js":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize.js":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point.js":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes.js":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics.js":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator.js":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link.js":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start.js":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end.js":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw.js":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat.js":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small.js":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with.js":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike.js":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub.js":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup.js":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/es6.typed.array-buffer.js":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array.js":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array.js":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array.js":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array.js":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array.js":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array.js":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array.js":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map.js":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set.js":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime.js":"../../node_modules/regenerator-runtime/runtime.js","./loadPage":"loadPage.js","./cart":"cart.js","./checkout":"checkout.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"core-js/modules/es6.array.copy-within.js":"../../node_modules/core-js/modules/es6.array.copy-within.js","core-js/modules/es6.array.fill.js":"../../node_modules/core-js/modules/es6.array.fill.js","core-js/modules/es6.array.filter.js":"../../node_modules/core-js/modules/es6.array.filter.js","core-js/modules/es6.array.find.js":"../../node_modules/core-js/modules/es6.array.find.js","core-js/modules/es6.array.find-index.js":"../../node_modules/core-js/modules/es6.array.find-index.js","core-js/modules/es7.array.flat-map.js":"../../node_modules/core-js/modules/es7.array.flat-map.js","core-js/modules/es6.array.from.js":"../../node_modules/core-js/modules/es6.array.from.js","core-js/modules/es7.array.includes.js":"../../node_modules/core-js/modules/es7.array.includes.js","core-js/modules/es6.array.iterator.js":"../../node_modules/core-js/modules/es6.array.iterator.js","core-js/modules/es6.array.map.js":"../../node_modules/core-js/modules/es6.array.map.js","core-js/modules/es6.array.of.js":"../../node_modules/core-js/modules/es6.array.of.js","core-js/modules/es6.array.slice.js":"../../node_modules/core-js/modules/es6.array.slice.js","core-js/modules/es6.array.sort.js":"../../node_modules/core-js/modules/es6.array.sort.js","core-js/modules/es6.array.species.js":"../../node_modules/core-js/modules/es6.array.species.js","core-js/modules/es6.date.to-primitive.js":"../../node_modules/core-js/modules/es6.date.to-primitive.js","core-js/modules/es6.function.has-instance.js":"../../node_modules/core-js/modules/es6.function.has-instance.js","core-js/modules/es6.function.name.js":"../../node_modules/core-js/modules/es6.function.name.js","core-js/modules/es6.map.js":"../../node_modules/core-js/modules/es6.map.js","core-js/modules/es6.math.acosh.js":"../../node_modules/core-js/modules/es6.math.acosh.js","core-js/modules/es6.math.asinh.js":"../../node_modules/core-js/modules/es6.math.asinh.js","core-js/modules/es6.math.atanh.js":"../../node_modules/core-js/modules/es6.math.atanh.js","core-js/modules/es6.math.cbrt.js":"../../node_modules/core-js/modules/es6.math.cbrt.js","core-js/modules/es6.math.clz32.js":"../../node_modules/core-js/modules/es6.math.clz32.js","core-js/modules/es6.math.cosh.js":"../../node_modules/core-js/modules/es6.math.cosh.js","core-js/modules/es6.math.expm1.js":"../../node_modules/core-js/modules/es6.math.expm1.js","core-js/modules/es6.math.fround.js":"../../node_modules/core-js/modules/es6.math.fround.js","core-js/modules/es6.math.hypot.js":"../../node_modules/core-js/modules/es6.math.hypot.js","core-js/modules/es6.math.imul.js":"../../node_modules/core-js/modules/es6.math.imul.js","core-js/modules/es6.math.log1p.js":"../../node_modules/core-js/modules/es6.math.log1p.js","core-js/modules/es6.math.log10.js":"../../node_modules/core-js/modules/es6.math.log10.js","core-js/modules/es6.math.log2.js":"../../node_modules/core-js/modules/es6.math.log2.js","core-js/modules/es6.math.sign.js":"../../node_modules/core-js/modules/es6.math.sign.js","core-js/modules/es6.math.sinh.js":"../../node_modules/core-js/modules/es6.math.sinh.js","core-js/modules/es6.math.tanh.js":"../../node_modules/core-js/modules/es6.math.tanh.js","core-js/modules/es6.math.trunc.js":"../../node_modules/core-js/modules/es6.math.trunc.js","core-js/modules/es6.number.constructor.js":"../../node_modules/core-js/modules/es6.number.constructor.js","core-js/modules/es6.number.epsilon.js":"../../node_modules/core-js/modules/es6.number.epsilon.js","core-js/modules/es6.number.is-finite.js":"../../node_modules/core-js/modules/es6.number.is-finite.js","core-js/modules/es6.number.is-integer.js":"../../node_modules/core-js/modules/es6.number.is-integer.js","core-js/modules/es6.number.is-nan.js":"../../node_modules/core-js/modules/es6.number.is-nan.js","core-js/modules/es6.number.is-safe-integer.js":"../../node_modules/core-js/modules/es6.number.is-safe-integer.js","core-js/modules/es6.number.max-safe-integer.js":"../../node_modules/core-js/modules/es6.number.max-safe-integer.js","core-js/modules/es6.number.min-safe-integer.js":"../../node_modules/core-js/modules/es6.number.min-safe-integer.js","core-js/modules/es6.number.parse-float.js":"../../node_modules/core-js/modules/es6.number.parse-float.js","core-js/modules/es6.number.parse-int.js":"../../node_modules/core-js/modules/es6.number.parse-int.js","core-js/modules/es6.object.assign.js":"../../node_modules/core-js/modules/es6.object.assign.js","core-js/modules/es7.object.define-getter.js":"../../node_modules/core-js/modules/es7.object.define-getter.js","core-js/modules/es7.object.define-setter.js":"../../node_modules/core-js/modules/es7.object.define-setter.js","core-js/modules/es7.object.entries.js":"../../node_modules/core-js/modules/es7.object.entries.js","core-js/modules/es6.object.freeze.js":"../../node_modules/core-js/modules/es6.object.freeze.js","core-js/modules/es6.object.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.object.get-own-property-descriptor.js","core-js/modules/es7.object.get-own-property-descriptors.js":"../../node_modules/core-js/modules/es7.object.get-own-property-descriptors.js","core-js/modules/es6.object.get-own-property-names.js":"../../node_modules/core-js/modules/es6.object.get-own-property-names.js","core-js/modules/es6.object.get-prototype-of.js":"../../node_modules/core-js/modules/es6.object.get-prototype-of.js","core-js/modules/es7.object.lookup-getter.js":"../../node_modules/core-js/modules/es7.object.lookup-getter.js","core-js/modules/es7.object.lookup-setter.js":"../../node_modules/core-js/modules/es7.object.lookup-setter.js","core-js/modules/es6.object.prevent-extensions.js":"../../node_modules/core-js/modules/es6.object.prevent-extensions.js","core-js/modules/es6.object.to-string.js":"../../node_modules/core-js/modules/es6.object.to-string.js","core-js/modules/es6.object.is.js":"../../node_modules/core-js/modules/es6.object.is.js","core-js/modules/es6.object.is-frozen.js":"../../node_modules/core-js/modules/es6.object.is-frozen.js","core-js/modules/es6.object.is-sealed.js":"../../node_modules/core-js/modules/es6.object.is-sealed.js","core-js/modules/es6.object.is-extensible.js":"../../node_modules/core-js/modules/es6.object.is-extensible.js","core-js/modules/es6.object.keys.js":"../../node_modules/core-js/modules/es6.object.keys.js","core-js/modules/es6.object.seal.js":"../../node_modules/core-js/modules/es6.object.seal.js","core-js/modules/es7.object.values.js":"../../node_modules/core-js/modules/es7.object.values.js","core-js/modules/es6.promise.js":"../../node_modules/core-js/modules/es6.promise.js","core-js/modules/es7.promise.finally.js":"../../node_modules/core-js/modules/es7.promise.finally.js","core-js/modules/es6.reflect.apply.js":"../../node_modules/core-js/modules/es6.reflect.apply.js","core-js/modules/es6.reflect.construct.js":"../../node_modules/core-js/modules/es6.reflect.construct.js","core-js/modules/es6.reflect.define-property.js":"../../node_modules/core-js/modules/es6.reflect.define-property.js","core-js/modules/es6.reflect.delete-property.js":"../../node_modules/core-js/modules/es6.reflect.delete-property.js","core-js/modules/es6.reflect.get.js":"../../node_modules/core-js/modules/es6.reflect.get.js","core-js/modules/es6.reflect.get-own-property-descriptor.js":"../../node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js","core-js/modules/es6.reflect.get-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.get-prototype-of.js","core-js/modules/es6.reflect.has.js":"../../node_modules/core-js/modules/es6.reflect.has.js","core-js/modules/es6.reflect.is-extensible.js":"../../node_modules/core-js/modules/es6.reflect.is-extensible.js","core-js/modules/es6.reflect.own-keys.js":"../../node_modules/core-js/modules/es6.reflect.own-keys.js","core-js/modules/es6.reflect.prevent-extensions.js":"../../node_modules/core-js/modules/es6.reflect.prevent-extensions.js","core-js/modules/es6.reflect.set.js":"../../node_modules/core-js/modules/es6.reflect.set.js","core-js/modules/es6.reflect.set-prototype-of.js":"../../node_modules/core-js/modules/es6.reflect.set-prototype-of.js","core-js/modules/es6.regexp.constructor.js":"../../node_modules/core-js/modules/es6.regexp.constructor.js","core-js/modules/es6.regexp.flags.js":"../../node_modules/core-js/modules/es6.regexp.flags.js","core-js/modules/es6.regexp.match.js":"../../node_modules/core-js/modules/es6.regexp.match.js","core-js/modules/es6.regexp.replace.js":"../../node_modules/core-js/modules/es6.regexp.replace.js","core-js/modules/es6.regexp.split.js":"../../node_modules/core-js/modules/es6.regexp.split.js","core-js/modules/es6.regexp.search.js":"../../node_modules/core-js/modules/es6.regexp.search.js","core-js/modules/es6.regexp.to-string.js":"../../node_modules/core-js/modules/es6.regexp.to-string.js","core-js/modules/es6.set.js":"../../node_modules/core-js/modules/es6.set.js","core-js/modules/es6.symbol.js":"../../node_modules/core-js/modules/es6.symbol.js","core-js/modules/es7.symbol.async-iterator.js":"../../node_modules/core-js/modules/es7.symbol.async-iterator.js","core-js/modules/es6.string.anchor.js":"../../node_modules/core-js/modules/es6.string.anchor.js","core-js/modules/es6.string.big.js":"../../node_modules/core-js/modules/es6.string.big.js","core-js/modules/es6.string.blink.js":"../../node_modules/core-js/modules/es6.string.blink.js","core-js/modules/es6.string.bold.js":"../../node_modules/core-js/modules/es6.string.bold.js","core-js/modules/es6.string.code-point-at.js":"../../node_modules/core-js/modules/es6.string.code-point-at.js","core-js/modules/es6.string.ends-with.js":"../../node_modules/core-js/modules/es6.string.ends-with.js","core-js/modules/es6.string.fixed.js":"../../node_modules/core-js/modules/es6.string.fixed.js","core-js/modules/es6.string.fontcolor.js":"../../node_modules/core-js/modules/es6.string.fontcolor.js","core-js/modules/es6.string.fontsize.js":"../../node_modules/core-js/modules/es6.string.fontsize.js","core-js/modules/es6.string.from-code-point.js":"../../node_modules/core-js/modules/es6.string.from-code-point.js","core-js/modules/es6.string.includes.js":"../../node_modules/core-js/modules/es6.string.includes.js","core-js/modules/es6.string.italics.js":"../../node_modules/core-js/modules/es6.string.italics.js","core-js/modules/es6.string.iterator.js":"../../node_modules/core-js/modules/es6.string.iterator.js","core-js/modules/es6.string.link.js":"../../node_modules/core-js/modules/es6.string.link.js","core-js/modules/es7.string.pad-start.js":"../../node_modules/core-js/modules/es7.string.pad-start.js","core-js/modules/es7.string.pad-end.js":"../../node_modules/core-js/modules/es7.string.pad-end.js","core-js/modules/es6.string.raw.js":"../../node_modules/core-js/modules/es6.string.raw.js","core-js/modules/es6.string.repeat.js":"../../node_modules/core-js/modules/es6.string.repeat.js","core-js/modules/es6.string.small.js":"../../node_modules/core-js/modules/es6.string.small.js","core-js/modules/es6.string.starts-with.js":"../../node_modules/core-js/modules/es6.string.starts-with.js","core-js/modules/es6.string.strike.js":"../../node_modules/core-js/modules/es6.string.strike.js","core-js/modules/es6.string.sub.js":"../../node_modules/core-js/modules/es6.string.sub.js","core-js/modules/es6.string.sup.js":"../../node_modules/core-js/modules/es6.string.sup.js","core-js/modules/es7.string.trim-left.js":"../../node_modules/core-js/modules/es7.string.trim-left.js","core-js/modules/es7.string.trim-right.js":"../../node_modules/core-js/modules/es7.string.trim-right.js","core-js/modules/es6.typed.array-buffer.js":"../../node_modules/core-js/modules/es6.typed.array-buffer.js","core-js/modules/es6.typed.int8-array.js":"../../node_modules/core-js/modules/es6.typed.int8-array.js","core-js/modules/es6.typed.uint8-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-array.js","core-js/modules/es6.typed.uint8-clamped-array.js":"../../node_modules/core-js/modules/es6.typed.uint8-clamped-array.js","core-js/modules/es6.typed.int16-array.js":"../../node_modules/core-js/modules/es6.typed.int16-array.js","core-js/modules/es6.typed.uint16-array.js":"../../node_modules/core-js/modules/es6.typed.uint16-array.js","core-js/modules/es6.typed.int32-array.js":"../../node_modules/core-js/modules/es6.typed.int32-array.js","core-js/modules/es6.typed.uint32-array.js":"../../node_modules/core-js/modules/es6.typed.uint32-array.js","core-js/modules/es6.typed.float32-array.js":"../../node_modules/core-js/modules/es6.typed.float32-array.js","core-js/modules/es6.typed.float64-array.js":"../../node_modules/core-js/modules/es6.typed.float64-array.js","core-js/modules/es6.weak-map.js":"../../node_modules/core-js/modules/es6.weak-map.js","core-js/modules/es6.weak-set.js":"../../node_modules/core-js/modules/es6.weak-set.js","core-js/modules/web.timers.js":"../../node_modules/core-js/modules/web.timers.js","core-js/modules/web.immediate.js":"../../node_modules/core-js/modules/web.immediate.js","core-js/modules/web.dom.iterable.js":"../../node_modules/core-js/modules/web.dom.iterable.js","regenerator-runtime/runtime.js":"../../node_modules/regenerator-runtime/runtime.js","./homepage":"homepage.js","./checkout":"checkout.js","./history":"history.js","./cart":"cart.js","./orderHistory":"orderHistory.js"}],"../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -9037,7 +9251,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54254" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49218" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

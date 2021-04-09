@@ -57,15 +57,33 @@ header.header__container {
 	justify-content: center;
 	align-items: center;
 }
-.user__checkout i {
-	margin-left: 0.5rem;
+.user__checkout .cart i {
+	margin-left: 0.3rem;
+	color: rgb(240, 2, 2);
+}
+/*  counter  */
+.user__checkout .cart {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.user__checkout .cart span {
+	font-display: 0.6rem;
+	color: var(--white);
+	position: absolute;
+	top: -7px;
+	right: -7px;
+	width: 15px;
+	height: 15px;
+	background-color: var(--primary);
+	border-radius: 50%;
 }
 
 a {
 	color: var(--white);
 	text-decoration: none;
 	cursor: pointer;
-	transition: all 0.3s ease;
 }
 
 /** MAIN BODY LAYOUT  */
@@ -150,9 +168,43 @@ button.order:active,
 button > i {
 	pointer-events: none;
 }
+/** ORDER HISTORY  */
+.history__container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 100vh;
+	padding: 1% 3%;
+	margin-top: 3%;
+}
+.history__inner {
+	width: 100%;
+	height: 100%;
+	padding: 0 10%;
+}
+.history__order {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1% 3%;
+	margin: 3% auto;
+}
+.history__order p {
+	margin-top: 10%;
+	text-align: center;
+}
+.history__total__saldo h4 {
+	letter-spacing: 1px;
+	color: var(--dark);
+	text-align: right;
+	border-top: 1px solid var(--dark);
+	padding-top: 1%;
+}
 
 /*** CHECKOUT ****  */
-.checkout__wrapper {
+.checkout__container {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -214,17 +266,22 @@ button > i {
 }
 
 .cart__item,
+.cart__price,
 .cart__qty,
 .cart__subtotal {
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: center;
 	align-items: center;
 }
 .cart__item p,
+.cart__price p,
+.cart__subtotal p,
 .cart__qty p,
-.cart__subtotal p {
-	font-size: 1.2rem;
+.cart__qty button {
+	/* font-size: 1.2rem; */
+	text-align: center;
+	margin-top: 10%;
 }
 .cart__qty .qty {
 	width: 100%;

@@ -1,16 +1,17 @@
 import axios from 'axios';
+import { CART_UPDATE } from './cart';
 
-export let products = [];
+export const products = [];
 
-export async function loadPage() {
+export async function renderHomePage() {
 	try {
+		CART_UPDATE.updateCounter();
 		const res = await axios({
 			method: 'GET',
 			url: '/api/items',
 		});
 
 		if (res.status === 200) {
-			// Render page
 			const container = document.querySelector('.items__container');
 
 			res.data.items.forEach(el => {

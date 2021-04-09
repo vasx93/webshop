@@ -20,18 +20,16 @@
 	<body>
 		<header class="header__container">
 			<div class="header">
-				<div class="nav__left">
-					<a class="link" href="/">Home</a>
-				</div>
-
+				<div class="nav__left"><a class="link" href="/">Home</a></div>
 				<div class="nav__right">
 					<div class="order__history">
 						<a class="link" href="/order-history">Order History</a>
 					</div>
 					<div class="user__checkout">
-						<a href="/user-checkout">Cart</a>
+						<a href="/user-checkout" id="toCart">Cart</a>
 						<div class="cart">
-							<i class="fas fa-shopping-cart"></i>
+							<i class="fas fa-shopping-cart fa-arge"></i>
+							<span class="counter"><p></p></span>
 						</div>
 					</div>
 				</div>
@@ -41,7 +39,7 @@
 		<div class="body__wrapper">
 			<main class="main">
 				<h1>Your Cart</h1>
-				<div class="checkout__wrapper">
+				<div class="checkout__container">
 					<div class="user__info"></div>
 					<div class="checkout"></div>
 				</div>
