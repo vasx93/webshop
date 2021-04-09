@@ -40,22 +40,6 @@ export function renderHistory() {
 			total.innerHTML = HISTORY_DISPLAY.renderTotal(orderArr[1]);
 			historyInner.append(total);
 		});
-		// data.forEach(orderArr => {
-		// 	const order = document.createElement('div');
-		// 	order.classList.add('history__order');
-		// 	// order.innerHTML = HISTORY_DISPLAY.renderOrder(orderArr[0]);
-		// 	order.innerHTML = orderArr[0].forEach(item => {
-		// 		console.log(item);
-		// 		item.innerHTML = HISTORY_DISPLAY.renderOrder(item);
-		// 		historyInner.append(order);
-		// 	});
-
-		// 	// Display total
-		// 	const total = document.createElement('div');
-		// 	total.classList.add('history__total');
-		// 	total.innerHTML = HISTORY_DISPLAY.renderTotal(orderArr[1]);
-		// 	historyInner.append(total);
-		// });
 	}
 }
 
