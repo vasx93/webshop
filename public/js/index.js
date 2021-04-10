@@ -15,6 +15,7 @@ if (document.querySelector('.items__container')) {
 			const id = ev.target.dataset.id;
 			CART.add(id);
 			CART_UPDATE.updateCounter();
+			ev.target.textContent = 'Added to cart';
 		}
 	});
 }
@@ -95,7 +96,7 @@ if (document.querySelector('.checkout')) {
 					alert('Order completed');
 					location.assign('/order-history');
 				}, 1200);
-			} else if (CART.contents.length == 0) {
+			} else if (CART.contents.length === 0) {
 				alert('Your cart is empty');
 				location.assign('/');
 			} else {
